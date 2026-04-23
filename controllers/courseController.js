@@ -11,8 +11,11 @@ const getCourses = async(req,res)=>{
 //POST request
 const createCourse = async(req,res)=>{
     try{
-        const{ title, price }=req.body;
-        const course = new Course({title,price});
+        const{title,price,description,duration,weekly_class,level,language
+            ,started_date,max_seat}=req.body;
+        const teacher_id = req.user.id;
+        const course = new Course({title,price,description,duration,weekly_class,level,language
+            ,started_date,max_seat,teacher_id});
         await course.save();
         res.status(201).json(course);
     }catch(error){
