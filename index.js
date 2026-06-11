@@ -1,15 +1,24 @@
 const express = require("express");//import express from node modules
+const cors = require('cors');
+require('dotenv').config();
+
 const connecDB = require('./config/db');//import connection function from config
+connecDB();
+
+const app = express();
+app.use(cors());
+const paymentRoute = require('./routes/paymentRoute');
+app.use('/enroll/payment',paymentRoute);
+
+app.use(express.urlencoded({ extended: true }));
+// middleware to read JSON
+app.use(express.json());
+//use routes
+
 const courseRoute = require("./routes/courseRoute");
 const userRoute = require('./routes/userRoute');
 const enrollRoute = require('./routes/enrollRoute');
 const mycourseRoute = require('./routes/mycourseRoute');
-const app = express();
-
-connecDB();
-// middleware to read JSON
-app.use(express.json());
-//use routes
 
 app.use('/courses',courseRoute);
 app.use('/user',userRoute);
