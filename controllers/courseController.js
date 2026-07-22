@@ -14,6 +14,10 @@ const createCourse = async(req,res)=>{
         const{title,price,description,duration,weekly_class,level,language
             ,started_date,max_seat}=req.body;
         const teacher_id = req.user.id;
+        const existCourse =await Course.findOne({title});
+        if(existCourse){
+            return res.status(400).json({message : "Course already exist"});
+        }
         const course = new Course({title,price,description,duration,weekly_class,level,language
             ,started_date,max_seat,teacher_id});
         await course.save();
@@ -27,31 +31,44 @@ const createCourse = async(req,res)=>{
 
 const updateCourse = async(req,res)=>{
     try{
-        const {id}=req.params;//get id from url
-        const{title, price}=req.body;
+        const {id}=req.params;//get course id from url
+         const{title,price,description,duration,weekly_class,level,language
+            ,started_date,max_seat}=req.body;
 
-        const course = await Course.findByIdAndUpdate(
-            id,
-            {title, price},
-            {new : true}
-        );
+        const request_teacher_id = req.user.id;
+        const course = await Course.findById(id);
+
         if(!course){
             return res.status(404).json({message : "Course not found"});
         }
-        res.json(course);
+
+        if(request_teacher_id!=course.teacher_id){
+            return res.status(400).json({message : "Not allowed to update"});
+        }
+
+        const update_course =await Course.findOneAndUpdate({_id : id},{title,price,description,duration,weekly_class,level,language
+            ,started_date,max_seat},{
+                new : true
+            });
+        res.json({message : "Update succesfull",update_course});
     }catch(error){
-        res.status(500).json({message : "server error"});
+        res.status(500).json(error.message);
     }
 };
 
 const deleteCourse = async(req,res)=>{
     try{
     const {id}=req.params;
-    const course = await Course.findByIdAndDelete(id);
+    const course = await Course.findById(id);
     if(!course){
         return res.status(404).json({message : "Course not found"});
     }
-    res.json(course);
+    const request_teacher_id = req.user.id;
+    if(request_teacher_id != course.teacher_id){
+        return res.status(400).json({message : "Not allowed to delete"});
+    }
+    const delete_course = await Course.deleteOne({_id : id});
+    res.json({message : "Course deletion successful",delete_course});
     }catch(error){
         res.status(500).json({message : "server error"});
     }

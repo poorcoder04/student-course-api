@@ -1,7 +1,7 @@
 # Student Course API
 
 ## 📌 Overview
-A backend API built using Node.js, Express, and MongoDB that allows users to register, login, and enroll in courses. Teachers can create and manage courses, while students can enroll and view their enrolled courses.
+A backend API built using Node.js, Express, and MongoDB that allows students to register, login,view all courses and enroll in their needed courses.Teachers can create and manage their own courses, while students can enroll and view their enrolled courses.
 
 ---
 
@@ -37,12 +37,12 @@ Authorization: Bearer TOKEN
 ## 📌 API Endpoints
 
 ### Auth
-- POST /auth/register
-- POST /auth/login
+- POST /user/register
+- POST /user/login
 
 ### Courses
 - GET /courses
-- POST /courses (Teacher only)
+- POST /courses/create (Teacher only)
 - PUT /courses/:id (Teacher only)
 - DELETE /courses/:id (Teacher only)
 

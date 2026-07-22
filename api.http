@@ -1,0 +1,39 @@
+@baseUrl = http://localhost:3000
+@token = PASTE_JWT_HERE
+@courseId = PASTE_COURSE_ID_HERE
+
+### 1. Register student
+POST {{baseUrl}}/user/register
+Content-Type: application/json
+
+{
+  "name": "Test Student",
+  "email": "student@test.com",
+  "password": "123456",
+  "role": "student"
+}
+
+### 2. Login (copy the token from the response)
+POST {{baseUrl}}/user/login
+Content-Type: application/json
+
+{
+  "email": "student@test.com",
+  "password": "123456"
+}
+
+### 3. Get all courses (copy a course _id)
+GET {{baseUrl}}/courses
+
+### 4. Create Stripe checkout session (student only)
+POST {{baseUrl}}/enroll/create-checkout-session
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "courseId": "{{courseId}}"
+}
+
+### 5. View my enrolled courses
+GET {{baseUrl}}/mycourse
+Authorization: Bearer {{token}}
